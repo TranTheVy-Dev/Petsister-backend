@@ -1,0 +1,36 @@
+name: Lumen CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🛒 Checkout source code
+        uses: actions/checkout@v4
+
+      - name: 🛠️ Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, pdo, pdo_mysql, tokenizer, xml
+          coverage: none
+
+      - name: 📦 Install Composer dependencies
+        run: composer install --no-progress --prefer-dist --no-interaction
+
+      - name: 📁 Check folder structure
+        run: ls -la
+
+      - name: ✅ (Optional) Run PHPUnit tests
+        run: |
+          if [ -f vendor/bin/phpunit ]; then
+            vendor/bin/phpunit
+          else
+            echo "No phpunit found. Skipping tests."
+          fi
