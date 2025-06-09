@@ -1,40 +1,37 @@
 FROM php:8.2-apache
 
-# Cài đặt các extension PHP cần thiết
+# Cài extension
 RUN apt-get update && apt-get install -y \
-    libzip-dev \
-    unzip \
-    git \
+    libzip-dev unzip curl \
     && docker-php-ext-configure zip \
     && docker-php-ext-install zip pdo pdo_mysql
 
 # Cài Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Đặt thư mục làm việc
+# Làm việc tại thư mục app
 WORKDIR /var/www/html
 
-# Copy composer files trước để tận dụng cache
+# Copy file composer trước
 COPY composer.json composer.lock ./
 
-# Chạy composer install
-RUN composer install --no-dev --no-scripts --prefer-dist
+# Cài thư viện PHP
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Copy toàn bộ project vào container (sau khi composer install để tránh cache bị mất)
+# Sau đó mới copy toàn bộ source code (tránh ghi đè vendor)
 COPY . .
 
-# Tạo thư mục storage nếu chưa có
-RUN mkdir -p /var/www/html/storage
+# Tạo thư mục storage và set quyền
+RUN mkdir -p /var/www/html/storage && \
+    chown -R www-data:www-data /var/www/html/storage
 
-# Thiết lập quyền
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-
-# Thiết lập Apache
+# Apache rewrite
 COPY ./docker/apache/vhost.conf /etc/apache2/sites-available/000-default.conf
 RUN a2enmod rewrite
 
-# Mở port
-EXPOSE 80
+# Config Apache lắng nghe đúng port Render yêu cầu
+ENV PORT=10000
+RUN sed -i "s/80/\${PORT}/g" /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf
+EXPOSE 10000
 
-# Khởi chạy
 CMD ["apache2-foreground"]
