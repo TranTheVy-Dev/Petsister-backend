@@ -102,7 +102,6 @@ class AuthController extends Controller
             'token' => 'required'
         ]);
         $passwordreset = resetpassword::where('token', $request->token)->first();
-        var_dump('data of email', $passwordreset->email);
         // có một cái bug lớn ở đây : nếu muốn dùng được eloquent truy cập vào bảng resetpassword lấy
         //trường email ra thì phải bỏ cái khoá chính tk email đi thì mới lấy được email trong bảng resetpassword
         // thông qua token và đem đi so sánh với trường email trong bảng customer
@@ -118,8 +117,8 @@ class AuthController extends Controller
         $newpassword = Hash::make($request->password);
         $customer->password = $newpassword;
         $customer->save();
-         if (!$customer->save()) {
-            return response()->json(['error' => 'Không thể lưu mật khẩu mới, vui lòng thử lại'], 500);
+            if ($customer->save()) {
+            return   $this->successResponse(['message' => "Your Request about reset Password has been Sucess"], 200);
         }
         $passwordreset->delete();
         if (!$customer->save()) {
