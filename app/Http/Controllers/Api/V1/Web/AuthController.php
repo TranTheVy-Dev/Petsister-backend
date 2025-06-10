@@ -82,7 +82,6 @@ class AuthController extends Controller
             return response()->json(["erro" => "không tìm thấy email của m"], 404);
         }
         $token = Str::random(60);
-        var_dump($token);
         resetpassword::updateOrCreate(
             ['email' => $customer->email],
             //laravel khong nhan duoc now nen khai bao them carbon now
@@ -93,6 +92,7 @@ class AuthController extends Controller
             $message->to($customer->email);
             $message->subject('Đặt lại mật khẩu');
         });
+        return response()->json("Your request is Succsess, Let's remake Your Password",200);
     }
     public function resetPassword(Request $request)
     {
