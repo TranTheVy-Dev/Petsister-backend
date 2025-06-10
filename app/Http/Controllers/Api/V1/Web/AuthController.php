@@ -117,12 +117,13 @@ class AuthController extends Controller
         $newpassword = Hash::make($request->password);
         $customer->password = $newpassword;
         $customer->save();
-            if ($customer->save()) {
-            return   $this->successResponse(['message' => "Your Request about reset Password has been Sucess"], 200);
-        }
         $passwordreset->delete();
         if (!$customer->save()) {
             return response()->json(['error' => 'Không thể lưu mật khẩu mới, vui lòng thử lại'], 500);
         }
+             if ($customer->save()) {
+            return   $this->successResponse(['message' => "Your Request about reset Password has been Sucess"], 200);
+        }
+        
     }
 };
