@@ -63,8 +63,7 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
                 'avatar' => $request->avatar, // Lưu trường avatar
             ]);
-
-            $this->successResponse($customer, 201);
+         return $this->successResponse($customer, 201);
         } catch (ValidationException $e) {
             return $this->errorResponse($e->validator->errors(), 400);
         } catch (Exception $e) {
