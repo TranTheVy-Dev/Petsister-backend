@@ -86,7 +86,7 @@ class AuthController extends Controller
             //laravel khong nhan duoc now nen khai bao them carbon now
             values: ['token' => $token, 'createdAt' => Carbon::now()]
         );
-        $feurl = getenv('FE_URL ') ?: 'http://localhost:3000';
+        $feurl = getenv('FE_URL ');
         $resetlink = $feurl . '/reset-password?token=' . $token;
         Mail::send('emails.reset_password', ['resetlink' => $resetlink, 'customer' => $customer], function ($message) use ($customer) {
             $message->to($customer->email);
@@ -123,6 +123,6 @@ class AuthController extends Controller
              if ($customer->save()) {
             return   $this->successResponse(['message' => "Your Request about reset Password has been Sucess"], 200);
         }
-        
+
     }
 };
