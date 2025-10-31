@@ -1,6 +1,6 @@
-# 🐾 Petsister API - Lumen Backend
+# 🐾 Petsister API - Laravel Backend
 
-**Petsister API** là một hệ thống **RESTful API** được xây dựng bằng [Lumen](https://lumen.laravel.com/) – một micro-framework nhanh, nhẹ, lý tưởng cho các dự án backend có hiệu năng cao. Dự án này hỗ trợ quản lý dịch vụ chăm sóc thú cưng, bao gồm các chức năng như: đăng ký người dùng, đặt lịch chăm sóc, quản lý thú cưng, nhân viên, và hơn thế nữa.
+**Petsister API** là một hệ thống **RESTful API** được xây dựng bằng [Laravel](https://laravel.com/) – một framework bảo mật, nhanh, lý tưởng cho các dự án backend có hiệu năng cao. Dự án này hỗ trợ quản lý dịch vụ chăm sóc thú cưng, bao gồm các chức năng như: đăng ký người dùng, đặt lịch chăm sóc, quản lý thú cưng, nhân viên, và hơn thế nữa.
 
 ---
 
@@ -19,7 +19,7 @@
 - Composer  
 - MySQL hoặc MariaDB  
 - Postman/Insomnia để test API  
-- Laravel Lumen (đã cài sẵn qua Composer)
+- Laravel (đã cài sẵn qua Composer)
 
 ---
 
