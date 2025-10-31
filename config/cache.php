@@ -70,7 +70,7 @@ return [
 
         'redis' => [
             'driver'     => 'redis',
-            'connection' => env('CACHE_CONNECTION', 'cache'),
+            'connection' => 'default',
         ],
 
     ],
@@ -86,9 +86,6 @@ return [
     |
     */
 
-    'prefix' => env(
-        'CACHE_PREFIX',
-        \Illuminate\Support\Str::slug(env('APP_NAME', 'lumen'), '_').'_cache'
-    ),
+    'prefix' => env('CACHE_PREFIX', 'lumen_cache'),
 
 ];

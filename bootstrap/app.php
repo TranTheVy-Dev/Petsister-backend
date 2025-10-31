@@ -85,6 +85,13 @@ $app->configure('app');
 $app->configure('filesystems');
 $app->configure('swagger-lume');
 
+//Cache redis
+$app->configure('database');
+$app->configure('cache');
+// đăng ký redis
+$app->register(Illuminate\Redis\RedisServiceProvider::class);
+// Nếu muốn dùng Redis Facade
+class_alias(Illuminate\Support\Facades\Redis::class, 'Redis');
 
 /*
 |--------------------------------------------------------------------------

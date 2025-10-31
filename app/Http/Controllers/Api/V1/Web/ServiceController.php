@@ -9,6 +9,7 @@ use App\Http\Requests\ServiceRequest;
 use App\Http\Controllers\Controller;
 use App\Models\Service;
 use Exception;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * @OA\Tag(
@@ -26,7 +27,9 @@ class ServiceController extends Controller
     public function index(Request $request)
     {
         try {
-            $sevices = Service::all();
+            $sevices = Cache::remember('services', 600, function () {
+                return Service::all();
+            });
             return $this->successResponse($sevices);
         } catch (Exception $e) {
             return $this->errorResponse($e->getMessage(), 500);
@@ -38,7 +41,10 @@ class ServiceController extends Controller
         try {
             //nếu sử dụng findOrFail nó sẽ mặc định là tìm kiếm theo ID
             // $service = Service::findOrFail($id);
-            $service = Service::where("id", $id)->firstOrFail();
+            $service = Cache::remember("service_{$id}", 600, function () use($id) {
+                return Service::where('id',$id)->firstOrFail();
+            });
+            // $service = Service::where("id", $id)->firstOrFail();
             return $this->successResponse($service);
         } catch (ModelNotFoundException $e) {
             return $this->errorResponse("không tìm thấy dịch vụ có slugs là: $id", 404);
@@ -50,10 +56,10 @@ class ServiceController extends Controller
     public function creatService(Request $request)
     {
         try {
-            $data =$request->all();
+            $data = $request->all();
             if ($request->hasFile('image_url')) {
-            $path = $request->file('image_url')->store('public/images');
-            $data['image_url'] = basename($path);
+                $path = $request->file('image_url')->store('public/images');
+                $data['image_url'] = basename($path);
             }
             $servicereq = new ServiceRequest($data);
             $servicevalidate = $servicereq->validate();
@@ -61,14 +67,13 @@ class ServiceController extends Controller
             return $this->successResponse($servicedata);
         } catch (ValidationException $e) {
             return $this->errorResponse($e->validator->errors()->all(), 400);
-        }catch (ModelNotFoundException $e) {
-          return $this->errorResponse("không tìm thấy dịch vụ", 404);
-        }
-        catch(Exception $e) {
-          return $this->errorResponse($e->getMessage(),500);
+        } catch (ModelNotFoundException $e) {
+            return $this->errorResponse("không tìm thấy dịch vụ", 404);
+        } catch (Exception $e) {
+            return $this->errorResponse($e->getMessage(), 500);
         }
     }
- 
+
     public function update(Request $request, $id)
     {
         try {
